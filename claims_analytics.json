@@ -1,0 +1,242 @@
+{
+  "metadata": {
+    "generated_at": "2026-03-09T17:29:51.127415",
+    "dataset_file": "synthetic_healthcare_claims_dataset.csv",
+    "total_records": 5000
+  },
+  "overall_statistics": {
+    "total_claims": 5000,
+    "denied_claims": 1693,
+    "approved_claims": 3307,
+    "denial_rate": 0.3386,
+    "denial_rate_percent": "33.9%",
+    "approval_rate": 0.6614,
+    "approval_rate_percent": "66.1%",
+    "avg_claim_amount": 10017.353487999999,
+    "median_claim_amount": 10030.41,
+    "total_claim_amount": 50086767.44
+  },
+  "top_procedures_by_denial": [
+    {
+      "rank": 1,
+      "procedure_code": "PROC_D",
+      "total_claims": 996,
+      "denied_claims": 395,
+      "denial_rate": 0.3966,
+      "denial_rate_percent": "39.7%"
+    },
+    {
+      "rank": 2,
+      "procedure_code": "PROC_E",
+      "total_claims": 1012,
+      "denied_claims": 395,
+      "denial_rate": 0.3903,
+      "denial_rate_percent": "39.0%"
+    },
+    {
+      "rank": 3,
+      "procedure_code": "PROC_A",
+      "total_claims": 989,
+      "denied_claims": 320,
+      "denial_rate": 0.3236,
+      "denial_rate_percent": "32.4%"
+    },
+    {
+      "rank": 4,
+      "procedure_code": "PROC_C",
+      "total_claims": 971,
+      "denied_claims": 291,
+      "denial_rate": 0.2997,
+      "denial_rate_percent": "30.0%"
+    },
+    {
+      "rank": 5,
+      "procedure_code": "PROC_B",
+      "total_claims": 1032,
+      "denied_claims": 292,
+      "denial_rate": 0.2829,
+      "denial_rate_percent": "28.3%"
+    }
+  ],
+  "denial_by_payer": [
+    {
+      "payer": "UnitedHealth",
+      "total_claims": 1033,
+      "denied_claims": 370,
+      "approved_claims": 663,
+      "denial_rate": 0.3582,
+      "denial_rate_percent": "35.8%",
+      "approval_rate": 0.6417999999999999,
+      "approval_rate_percent": "64.2%"
+    },
+    {
+      "payer": "Aetna",
+      "total_claims": 960,
+      "denied_claims": 337,
+      "approved_claims": 623,
+      "denial_rate": 0.351,
+      "denial_rate_percent": "35.1%",
+      "approval_rate": 0.649,
+      "approval_rate_percent": "64.9%"
+    },
+    {
+      "payer": "Kaiser",
+      "total_claims": 1001,
+      "denied_claims": 337,
+      "approved_claims": 664,
+      "denial_rate": 0.3367,
+      "denial_rate_percent": "33.7%",
+      "approval_rate": 0.6633,
+      "approval_rate_percent": "66.3%"
+    },
+    {
+      "payer": "Cigna",
+      "total_claims": 1004,
+      "denied_claims": 336,
+      "approved_claims": 668,
+      "denial_rate": 0.3347,
+      "denial_rate_percent": "33.5%",
+      "approval_rate": 0.6653,
+      "approval_rate_percent": "66.5%"
+    },
+    {
+      "payer": "BlueCross",
+      "total_claims": 1002,
+      "denied_claims": 313,
+      "approved_claims": 689,
+      "denial_rate": 0.3124,
+      "denial_rate_percent": "31.2%",
+      "approval_rate": 0.6876,
+      "approval_rate_percent": "68.8%"
+    }
+  ],
+  "denial_by_provider_type": [
+    {
+      "provider_type": "Hospital",
+      "total_claims": 1276,
+      "denied_claims": 445,
+      "approved_claims": 831,
+      "denial_rate": 0.3487,
+      "denial_rate_percent": "34.9%",
+      "approval_rate": 0.6513,
+      "approval_rate_percent": "65.1%"
+    },
+    {
+      "provider_type": "Diagnostic Center",
+      "total_claims": 1255,
+      "denied_claims": 424,
+      "approved_claims": 831,
+      "denial_rate": 0.3378,
+      "denial_rate_percent": "33.8%",
+      "approval_rate": 0.6622,
+      "approval_rate_percent": "66.2%"
+    },
+    {
+      "provider_type": "Clinic",
+      "total_claims": 1240,
+      "denied_claims": 416,
+      "approved_claims": 824,
+      "denial_rate": 0.3355,
+      "denial_rate_percent": "33.6%",
+      "approval_rate": 0.6645,
+      "approval_rate_percent": "66.5%"
+    },
+    {
+      "provider_type": "Specialist",
+      "total_claims": 1229,
+      "denied_claims": 408,
+      "approved_claims": 821,
+      "denial_rate": 0.332,
+      "denial_rate_percent": "33.2%",
+      "approval_rate": 0.6679999999999999,
+      "approval_rate_percent": "66.8%"
+    }
+  ],
+  "denial_by_insurance_type": [
+    {
+      "insurance_type": "Medicaid",
+      "total_claims": 1039,
+      "denied_claims": 374,
+      "approved_claims": 665,
+      "denial_rate": 0.36,
+      "denial_rate_percent": "36.0%"
+    },
+    {
+      "insurance_type": "Medicare",
+      "total_claims": 1521,
+      "denied_claims": 514,
+      "approved_claims": 1007,
+      "denial_rate": 0.3379,
+      "denial_rate_percent": "33.8%"
+    },
+    {
+      "insurance_type": "Private",
+      "total_claims": 2440,
+      "denied_claims": 805,
+      "approved_claims": 1635,
+      "denial_rate": 0.3299,
+      "denial_rate_percent": "33.0%"
+    }
+  ],
+  "claim_amount_comparison": {
+    "denied_claims": {
+      "count": 1693,
+      "avg_amount": 9960.679704666274,
+      "median_amount": 9919.83,
+      "min_amount": 100.33,
+      "max_amount": 19994.67,
+      "std_dev": 5790.113727452629,
+      "total_amount": 16863430.740000002
+    },
+    "approved_claims": {
+      "count": 3307,
+      "avg_amount": 10046.367311762928,
+      "median_amount": 10078.69,
+      "min_amount": 104.79,
+      "max_amount": 19993.97,
+      "std_dev": 5770.484251743011,
+      "total_amount": 33223336.7
+    },
+    "comparison": {
+      "avg_amount_difference": -85.68760709665366,
+      "avg_amount_difference_percent": "-0.9%",
+      "median_amount_difference": -158.86000000000058
+    }
+  },
+  "prior_authorization_impact": {
+    "with_authorization": {
+      "authorization_status": "Yes",
+      "total_claims": 3505,
+      "denied_claims": 1042,
+      "denial_rate": 0.2973,
+      "denial_rate_percent": "29.7%",
+      "avg_claim_amount": 10071.1287,
+      "median_claim_amount": 10033.75
+    },
+    "without_authorization": {
+      "authorization_status": "No",
+      "total_claims": 1495,
+      "denied_claims": 651,
+      "denial_rate": 0.4355,
+      "denial_rate_percent": "43.5%",
+      "avg_claim_amount": 9891.2785,
+      "median_claim_amount": 9986.67
+    }
+  },
+  "documentation_impact": {
+    "complete_documentation": {
+      "documentation_status": "Yes",
+      "total_claims": 4257,
+      "denied_claims": 1261,
+      "denial_rate": 0.2962,
+      "denial_rate_percent": "29.6%"
+    },
+    "incomplete_documentation": {
+      "documentation_status": "No",
+      "total_claims": 743,
+      "denied_claims": 432,
+      "denial_rate": 0.5814,
+      "denial_rate_percent": "58.1%"
+    }
+  }
+}
