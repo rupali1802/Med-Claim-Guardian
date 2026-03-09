@@ -14,8 +14,8 @@ build/
 venv/
 env/
 
-# ML model artifacts (large files)
-*.pkl
+# ML model artifacts - included so deployed server can run without retraining
+# *.pkl
 
 # Database files
 *.db
