@@ -19,6 +19,18 @@ function App() {
   const [analytics, setAnalytics] = useState(null);
   const [activeTab, setActiveTab] = useState('predict');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 820);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 820;
+      setIsMobile(mobile);
+      if (mobile) setSidebarCollapsed(true);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Fallback mock data used only if real API is unavailable
   const MOCK_RECENT_PREDICTIONS = [
@@ -157,12 +169,21 @@ function App() {
         setActiveTab={setActiveTab}
         collapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed(c => !c)}
+        isMobile={isMobile}
       />
+
+      {/* Mobile overlay backdrop — dims content when sidebar drawer is open */}
+      {isMobile && !sidebarCollapsed && (
+        <div
+          onClick={() => setSidebarCollapsed(true)}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 99, cursor: 'pointer' }}
+        />
+      )}
 
       {/* ══════════════════════════════════════════
           MAIN CONTENT AREA
       ══════════════════════════════════════════ */}
-      <div className="app-content" style={{ marginLeft: sidebarCollapsed ? 72 : 256, flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh', position: 'relative', zIndex: 1, transition: 'margin-left 0.28s cubic-bezier(0.4,0,0.2,1)' }}>
+      <div className="app-content" style={{ marginLeft: isMobile ? 0 : (sidebarCollapsed ? 72 : 256), flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh', position: 'relative', zIndex: 1, transition: 'margin-left 0.28s cubic-bezier(0.4,0,0.2,1)' }}>
 
         {/* ── Top Bar ── */}
         <header style={{

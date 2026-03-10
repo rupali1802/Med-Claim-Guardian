@@ -65,7 +65,7 @@ const STATUS_ITEMS = [
      collapsed   – boolean                (from App state)
      onToggle    – () => void             (from App, flips collapsed)
 ────────────────────────────────────────────────────────────────── */
-export default function Sidebar({ activeTab, setActiveTab, collapsed, onToggle }) {
+export default function Sidebar({ activeTab, setActiveTab, collapsed, onToggle, isMobile }) {
   const W = collapsed ? 72 : 256;
 
   /* Rail indicator: track each nav button's offsetTop */
@@ -87,7 +87,7 @@ export default function Sidebar({ activeTab, setActiveTab, collapsed, onToggle }
       <style>{`
         /* ── Sidebar container ── */
         .mcg-sidebar {
-          transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           overflow: hidden;
         }
 
@@ -262,6 +262,7 @@ export default function Sidebar({ activeTab, setActiveTab, collapsed, onToggle }
           top: 0, left: 0, bottom: 0,
           zIndex: 100,
           boxShadow: '4px 0 32px rgba(0,0,0,0.7)',
+          transform: isMobile && collapsed ? 'translateX(-100%)' : 'translateX(0)',
         }}
       >
         {/* Animated scan-line */}
@@ -385,7 +386,7 @@ export default function Sidebar({ activeTab, setActiveTab, collapsed, onToggle }
                 key={item.id}
                 ref={el => { btnRefs.current[item.id] = el; }}
                 className={`mcg-nav-btn${isActive ? ' mcg-active' : ''}`}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => { setActiveTab(item.id); if (isMobile && !collapsed) onToggle(); }}
                 style={{
                   width: '100%',
                   display: 'flex',
