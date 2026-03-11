@@ -31,6 +31,13 @@ body {
   100% { background-position: 0% 50%; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -40,6 +47,7 @@ body {
 /* GLASS CARD STYLES */
 .card {
   background: rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 1rem;
@@ -85,6 +93,7 @@ body {
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 
@@ -116,6 +125,7 @@ body {
   border-radius: 0.75rem;
   font-size: 0.875rem;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   color: #1f2937;
 }

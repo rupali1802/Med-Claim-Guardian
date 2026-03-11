@@ -49,11 +49,19 @@ body {
   100% { background-position: 0% 50%; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
 /* ============ GLASS COMPONENTS ============ */
 
 /* GLASS CARD */
 .glass-card {
   background: var(--glass-white);
+  -webkit-backdrop-filter: blur(var(--blur-amount));
   backdrop-filter: blur(var(--blur-amount));
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 1.5rem;
@@ -94,6 +102,7 @@ body {
   font-weight: 600;
   font-size: 0.95rem;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  -webkit-backdrop-filter: blur(var(--blur-amount));
   backdrop-filter: blur(var(--blur-amount));
   box-shadow: var(--glass-shadow);
   position: relative;
@@ -130,6 +139,13 @@ body {
   box-shadow: var(--glass-shadow);
 }
 
+.glass-btn:focus-visible {
+  outline: none;
+  border-color: rgba(59, 130, 246, 1);
+  box-shadow: var(--glass-shadow-hover), 0 0 0 3px rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
+}
+
 .glass-btn-secondary {
   background: var(--glass-white);
   color: var(--dark-text);
@@ -149,6 +165,7 @@ body {
   font-family: inherit;
   font-size: 0.95rem;
   color: var(--dark-text);
+  -webkit-backdrop-filter: blur(var(--blur-amount));
   backdrop-filter: blur(var(--blur-amount));
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -178,6 +195,7 @@ body {
   font-family: inherit;
   font-size: 0.95rem;
   color: var(--dark-text);
+  -webkit-backdrop-filter: blur(var(--blur-amount));
   backdrop-filter: blur(var(--blur-amount));
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   appearance: none;
@@ -195,6 +213,7 @@ body {
 .glass-badge {
   display: inline-block;
   background: var(--glass-white);
+  -webkit-backdrop-filter: blur(var(--blur-amount));
   backdrop-filter: blur(var(--blur-amount));
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 999px;
@@ -280,6 +299,7 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  color: transparent;
   font-weight: 700;
 }
 
@@ -291,14 +311,17 @@ body {
 /* ============ UTILITY CLASSES ============ */
 
 .glass-blur {
+  -webkit-backdrop-filter: blur(var(--blur-amount));
   backdrop-filter: blur(var(--blur-amount));
 }
 
 .glass-blur-sm {
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
 }
 
 .glass-blur-lg {
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
 }
 
