@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security.api_key import APIKeyHeader
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 import joblib
 import pandas as pd
@@ -94,6 +96,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Get base directory before using it
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # Import and include OAuth routes
 try:
     from oauth_routes import router as oauth_router
@@ -102,8 +107,27 @@ try:
 except ImportError:
     logger.warning("OAuth module not available - social login will not work")
 
+# Serve React frontend static files
+BUILD_DIR = os.path.join(BASE_DIR, 'rcm_dashboard', 'build')
+if os.path.exists(BUILD_DIR):
+    app.mount("/assets", StaticFiles(directory=os.path.join(BUILD_DIR, 'assets')), name="assets")
+    
+    @app.get("/{full_path:path}", response_class=HTMLResponse)
+    async def serve_frontend(full_path: str):
+        """Serve React app for all non-API routes (client-side routing)"""
+        # Skip API and other special routes
+        if full_path.startswith(('api/', 'docs', 'openapi', 'redoc', '.')):
+            return {"detail": "Not found"}, 404
+        # Serve index.html for all other routes (React client-side routing)
+        index_path = os.path.join(BUILD_DIR, 'index.html')
+        if os.path.exists(index_path):
+            with open(index_path, 'r') as f:
+                return f.read()
+        return {"detail": "Frontend build not found"}, 404
+else:
+    logger.warning(f"React build directory not found at {BUILD_DIR} - Frontend will not be served")
+
 # Load the trained model and label encoders
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, 'denial_model.pkl')
 ENCODERS_PATH = os.path.join(BASE_DIR, 'label_encoders.pkl')
 EXPLAINER_PATH = os.path.join(BASE_DIR, 'shap_explainer.pkl')
