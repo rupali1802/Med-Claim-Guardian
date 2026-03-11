@@ -14,6 +14,7 @@ import OAuthCallback from './components/OAuthCallback';
 import ErrorBoundary from './components/ErrorBoundary';
 import axios from 'axios';
 import './premium.css';
+import './glass-liquid.css';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 

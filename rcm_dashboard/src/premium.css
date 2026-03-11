@@ -1,27 +1,24 @@
 /* ============================================================
-   HOSPITAL-GRADE PROFESSIONAL HEALTHCARE DASHBOARD
+   GLASS LIQUID THEME - MODERN GLASSMORPHISM & VIBRANT UI
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-  /* Medical Color Palette */
-  --color-medical-blue: #0F4C81;
-  --color-medical-teal: #006B92;
-  --color-accent-teal: #008BA3;
-  --color-light-bg: #F8FBFD;
-  --color-white: #FFFFFF;
-  --color-gray-50: #F9FAFB;
-  --color-gray-100: #F3F4F6;
-  --color-gray-200: #E5E7EB;
-  --color-gray-300: #D1D5DB;
-  --color-gray-500: #6B7280;
-  --color-gray-700: #374151;
-  --color-gray-900: #1F2937;
-  --color-success: #059669;
-  --color-warning: #D97706;
-  --color-danger: #DC2626;
-  --color-info: #0369A1;
+  /* Glass Liquid Color Palette */
+  --color-glass-blue: #667eea;
+  --color-glass-purple: #764ba2;
+  --color-glass-pink: #f093fb;
+  --color-glass-cyan: #00f2fe;
+  --color-glass-white: rgba(255, 255, 255, 0.15);
+  --color-glass-white-hover: rgba(255, 255, 255, 0.25);
+  --color-accent: #3b82f6;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #0369a1;
+  --glass-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
+  --glass-shadow-hover: 0 12px 48px rgba(59, 130, 246, 0.3);
 }
 
 * {
