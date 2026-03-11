@@ -94,6 +94,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Import and include OAuth routes
+try:
+    from oauth_routes import router as oauth_router
+    app.include_router(oauth_router)
+    logger.info("OAuth routes loaded successfully")
+except ImportError:
+    logger.warning("OAuth module not available - social login will not work")
+
 # Load the trained model and label encoders
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, 'denial_model.pkl')
@@ -321,8 +329,7 @@ def read_root():
     }
 
 @app.post("/predict", response_model=ClaimPredictionResponse)
-@limiter.limit("60/minute")
-def predict_claim_denial(request: ClaimPredictionRequest, request_obj: Request) -> ClaimPredictionResponse:
+def predict_claim_denial(request: ClaimPredictionRequest) -> ClaimPredictionResponse:
     """
     Predict the probability of healthcare claim denial with AI-powered explainability.
     
@@ -373,10 +380,6 @@ def predict_claim_denial(request: ClaimPredictionRequest, request_obj: Request) 
             "claim_submission_delay_days": 3,
             "payer": "BlueCross"
         }
-    """
-        
-    Returns:
-        ClaimPredictionResponse with denial probability, risk level, and suggested action
     """
     try:
         # Create a DataFrame with the input data
@@ -802,10 +805,6 @@ def get_payers_analytics():
         try:
             from claims_analytics import ClaimsAnalytics
             
-    def fetch_payers():
-        try:
-            from claims_analytics import ClaimsAnalytics
-            
             analytics = ClaimsAnalytics(os.path.join(BASE_DIR, 'synthetic_healthcare_claims_dataset.csv'))
             result = {
                 "payers": analytics.get_denial_rate_by_payer(),
@@ -865,7 +864,6 @@ def get_shap_explanation(request: ClaimPredictionRequest) -> Dict[str, Any]:
     Raises:
         HTTPException: 400 if SHAP library is not installed
         HTTPException: 500 if explanation generation fails
-    """
     """
     global explainer
     if not explainer and SHAP_AVAILABLE:

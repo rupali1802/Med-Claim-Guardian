@@ -17,25 +17,17 @@ load_dotenv()
 # Configure logging
 logger = logging.getLogger(__name__)
 
-# Database setup
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "3306")
-DB_NAME = os.getenv("DB_NAME", "med-claim")
-DB_USER = os.getenv("DB_USER", "root")
-DB_PASSWORD = quote_plus(os.getenv("DB_PASSWORD", ""))
+# Database setup - Use SQLite for simplicity
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATABASE_URL = f"sqlite:///{os.path.join(BASE_DIR, 'predictions.db')}"
 
-DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-
-# Create engine with connection pooling for better resource management
+# Create engine
 engine = create_engine(
     DATABASE_URL,
-    pool_size=10,           # Number of connections to keep in pool
-    max_overflow=20,        # Additional connections beyond pool_size
-    pool_recycle=3600,      # Recycle connections after 1 hour to avoid timeout issues
-    pool_pre_ping=True,     # Test connections before using them
+    connect_args={"check_same_thread": False},
     echo=False
 )
-logger.info("Database connection pool configured with pooling enabled")
+logger.info("Database connection configured with SQLite")
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()

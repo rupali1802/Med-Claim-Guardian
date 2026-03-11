@@ -1,0 +1,163 @@
+
+/* ============================================================
+   LOGIN & REGISTER PAGE ANIMATIONS
+   ============================================================ */
+
+@keyframes blob {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Login/Register Form Styles */
+.auth-container {
+  background: linear-gradient(to bottom right, rgba(30, 41, 59, 0.8), rgba(88, 28, 135, 0.8));
+  backdrop-filter: blur(10px);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.auth-input {
+  background: rgb(249, 250, 251);
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: rgb(59, 130, 246);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  background: #ffffff;
+}
+
+.auth-button {
+  background: linear-gradient(to right, rgb(37, 99, 235), rgb(6, 182, 212));
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.auth-button:hover:not(:disabled) {
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+  transform: translateY(-2px);
+}
+
+.auth-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.error-alert {
+  background: rgb(254, 226, 226);
+  border: 1px solid rgb(254, 202, 202);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  color: rgb(153, 27, 27);
+}
+
+/* Password visibility toggle */
+.password-toggle {
+  cursor: pointer;
+  color: rgb(107, 114, 128);
+  transition: color 0.2s ease;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.password-toggle:hover {
+  color: rgb(31, 41, 55);
+}
+
+/* Social login buttons */
+.social-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.5rem;
+  background: rgb(249, 250, 251);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  color: rgb(31, 41, 55);
+}
+
+.social-button:hover {
+  background: rgb(243, 244, 246);
+  border-color: rgb(191, 193, 198);
+}
+
+/* Form divider */
+.form-divider {
+  position: relative;
+  margin: 1.5rem 0;
+}
+
+.form-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgb(229, 231, 235);
+}
+
+.form-divider span {
+  position: relative;
+  background: white;
+  padding: 0 0.5rem;
+  color: rgb(107, 114, 128);
+  font-size: 0.875rem;
+}
+
+/* Success message */
+.success-message {
+  background: rgb(240, 253, 250);
+  border: 1px solid rgb(167, 243, 208);
+  color: rgb(5, 150, 105);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .auth-container {
+    padding: 1.5rem;
+  }
+  
+  .animate-blob {
+    width: 250px;
+    height: 250px;
+  }
+}

@@ -1,4 +1,6 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+import { TrendingDown, TrendingUp, BarChart3, LineChart, PieChart, AlertTriangle } from 'lucide-react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -177,113 +179,220 @@ const DenialAnalytics = ({ data, analytics }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="space-y-6"
+    >
       {/* Header */}
-      <div className="flex items-center gap-3 mb-8">
-        <div className="p-3 bg-gradient-to-r from-blue-50 to-teal-50 rounded-lg border border-blue-200">
-          <span className="text-3xl">📊</span>
-        </div>
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6 }}
+        className="flex items-center gap-4 mb-8"
+      >
+        <motion.div
+          whileHover={{ scale: 1.05, rotate: 5 }}
+          className="p-4 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-xl border border-cyan-400/30"
+        >
+          <BarChart3 className="w-8 h-8 text-cyan-400" />
+        </motion.div>
         <div>
-          <h2 className="text-3xl font-bold text-blue-900">
+          <h2 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
             Analytics & Insights
           </h2>
-          <p className="text-sm text-gray-600">Real-time denial trends and claim analytics</p>
+          <p className="text-gray-600 text-sm font-medium mt-1">Real-time denial trends and claim analytics across all providers</p>
         </div>
-      </div>
+      </motion.div>
 
       {/* Top Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="group bg-green-50 border border-green-200 rounded-xl p-6 hover:border-green-400 transition-all duration-300 hover:shadow-lg hover:shadow-green-100">
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-green-700 text-sm font-semibold">Average Denial Rate</p>
-            <span className="text-2xl">📉</span>
-          </div>
-          <p className="text-4xl font-bold text-green-700">
-            {(
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={{
+          visible: {
+            transition: {
+              staggerChildren: 0.1,
+            },
+          },
+        }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+      >
+        {[
+          {
+            title: 'Average Denial Rate',
+            value: (
               Object.values(resolvedData.denialsByPayer).reduce((a, b) => a + b, 0) / 
               Object.values(resolvedData.denialsByPayer).length * 100
-            ).toFixed(1)}%
-          </p>
-          <p className="text-xs text-green-600 mt-2">Across all payers</p>
-        </div>
-
-        <div className="group bg-red-50 border border-red-200 rounded-xl p-6 hover:border-red-400 transition-all duration-300 hover:shadow-lg hover:shadow-red-100">
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-red-700 text-sm font-semibold">High Risk Claims</p>
-            <span className="text-2xl">⚠️</span>
-          </div>
-          <p className="text-4xl font-bold text-red-700">
-            {resolvedData.riskDistribution.High}
-          </p>
-          <p className="text-xs text-red-600 mt-2">Requires attention</p>
-        </div>
-
-        <div className="group bg-blue-50 border border-blue-200 rounded-xl p-6 hover:border-blue-400 transition-all duration-300 hover:shadow-lg hover:shadow-blue-100">
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-blue-700 text-sm font-semibold">Total Claims</p>
-            <span className="text-2xl">📋</span>
-          </div>
-          <p className="text-4xl font-bold text-blue-700">
-            {Object.values(resolvedData.riskDistribution).reduce((a, b) => a + b, 0).toLocaleString()}
-          </p>
-          <p className="text-xs text-blue-600 mt-2">In database</p>
-        </div>
-
-        <div className="group bg-emerald-50 border border-emerald-200 rounded-xl p-6 hover:border-emerald-400 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-100">
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-emerald-700 text-sm font-semibold">Approval Rate</p>
-            <span className="text-2xl">✅</span>
-          </div>
-          <p className="text-4xl font-bold text-emerald-700">
-            {(
+            ).toFixed(1),
+            unit: '%',
+            icon: TrendingDown,
+            color: 'from-emerald-500/20 to-green-500/20',
+            iconColor: 'text-emerald-400',
+            borderColor: 'border-emerald-400/30',
+            accentColor: 'text-emerald-300',
+            subtext: 'Across all payers',
+          },
+          {
+            title: 'High Risk Claims',
+            value: resolvedData.riskDistribution.High,
+            unit: '',
+            icon: AlertTriangle,
+            color: 'from-red-500/20 to-orange-500/20',
+            iconColor: 'text-red-400',
+            borderColor: 'border-red-400/30',
+            accentColor: 'text-red-300',
+            subtext: 'Requires attention',
+          },
+          {
+            title: 'Total Claims',
+            value: Object.values(resolvedData.riskDistribution).reduce((a, b) => a + b, 0).toLocaleString(),
+            unit: '',
+            icon: BarChart3,
+            color: 'from-blue-500/20 to-cyan-500/20',
+            iconColor: 'text-blue-400',
+            borderColor: 'border-blue-400/30',
+            accentColor: 'text-blue-300',
+            subtext: 'In database',
+          },
+          {
+            title: 'Approval Rate',
+            value: (
               100 - (
                 Object.values(resolvedData.denialsByPayer).reduce((a, b) => a + b, 0) / 
                 Object.values(resolvedData.denialsByPayer).length * 100
               )
-            ).toFixed(1)}%
-          </p>
-          <p className="text-xs text-emerald-600 mt-2">Expected success</p>
-        </div>
-      </div>
+            ).toFixed(1),
+            unit: '%',
+            icon: TrendingUp,
+            color: 'from-teal-500/20 to-emerald-500/20',
+            iconColor: 'text-teal-400',
+            borderColor: 'border-teal-400/30',
+            accentColor: 'text-teal-300',
+            subtext: 'Expected success',
+          },
+        ].map((metric, idx) => (
+          <motion.div
+            key={metric.title}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            whileHover={{ y: -5, boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)' }}
+            className={`group bg-gradient-to-br ${metric.color} border ${metric.borderColor} rounded-xl p-6 transition-all cursor-default backdrop-blur-xl`}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold text-gray-800">{metric.title}</h3>
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                className={`p-2 rounded-lg bg-white/5 ${metric.iconColor}`}
+              >
+                <metric.icon className="w-5 h-5" />
+              </motion.div>
+            </div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: idx * 0.1 + 0.2, duration: 0.4 }}
+              className={`text-4xl font-bold ${metric.accentColor}`}
+            >
+              {metric.value}{metric.unit}
+            </motion.div>
+            <p className="text-xs text-gray-700 font-medium mt-2">{metric.subtext}</p>
+          </motion.div>
+        ))}
+      </motion.div>
 
       {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={{
+          visible: {
+            transition: {
+              staggerChildren: 0.1,
+            },
+          },
+        }}
+        className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+      >
         {/* Denial by Payer */}
-        <div className="group bg-white border border-gray-200 rounded-xl p-6 hover:border-gray-400 transition-all duration-300 hover:shadow-lg hover:shadow-blue-100">
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0 },
+          }}
+          whileHover={{ boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)' }}
+          className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-xl p-6 transition-all"
+        >
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-2xl">🏦</span>
-            <h3 className="text-lg font-bold text-blue-900">Denial by Payer</h3>
+            <BarChart3 className="w-5 h-5 text-cyan-400" />
+            <h3 className="font-bold text-gray-800">Denial by Payer</h3>
           </div>
           <Bar data={payerChartData} options={chartOptions} height={300} />
-        </div>
+        </motion.div>
 
         {/* Denial by Procedure */}
-        <div className="group bg-white border border-gray-200 rounded-xl p-6 hover:border-gray-400 transition-all duration-300 hover:shadow-lg hover:shadow-blue-100">
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0 },
+          }}
+          whileHover={{ boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)' }}
+          className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-xl p-6 transition-all"
+        >
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-2xl">🔬</span>
-            <h3 className="text-lg font-bold text-blue-900">Procedure Trends</h3>
+            <LineChart className="w-5 h-5 text-cyan-400" />
+            <h3 className="font-bold text-gray-800">Procedure Trends</h3>
           </div>
           <Line data={procedureChartData} options={chartOptions} height={300} />
-        </div>
+        </motion.div>
 
         {/* Risk Distribution */}
-        <div className="group bg-white border border-gray-200 rounded-xl p-6 hover:border-gray-400 transition-all duration-300 hover:shadow-lg hover:shadow-blue-100">
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0 },
+          }}
+          whileHover={{ boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)' }}
+          className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-xl p-6 transition-all"
+        >
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-2xl">📊</span>
-            <h3 className="text-lg font-bold text-blue-900">Risk Distribution</h3>
+            <PieChart className="w-5 h-5 text-cyan-400" />
+            <h3 className="font-bold text-gray-800">Risk Distribution</h3>
           </div>
           <Doughnut data={riskDistributionData} options={chartOptions} height={300} />
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
-      {/* Provider Chart — full width row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="group bg-white border border-gray-200 rounded-xl p-6 hover:border-gray-400 transition-all duration-300 hover:shadow-lg hover:shadow-blue-100">
+      {/* Provider Chart & Insights */}
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={{
+          visible: {
+            transition: {
+              staggerChildren: 0.1,
+            },
+          },
+        }}
+        className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+      >
+        {/* Provider Chart */}
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0 },
+          }}
+          whileHover={{ boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)' }}
+          className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-xl p-6 transition-all"
+        >
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-2xl">🏢</span>
-            <h3 className="text-lg font-bold text-blue-900">Denial by Provider Type</h3>
+            <BarChart3 className="w-5 h-5 text-cyan-400" />
+            <h3 className="font-bold text-gray-800">Denial by Provider Type</h3>
           </div>
-          <p className="text-xs text-gray-600 mb-4">Denial rate breakdown across healthcare provider categories</p>
+          <p className="text-xs text-gray-700 font-medium mb-4">Denial rate breakdown across healthcare provider categories</p>
           <Bar data={providerChartData} options={{
             ...chartOptions,
             plugins: {
@@ -302,106 +411,212 @@ const DenialAnalytics = ({ data, analytics }) => {
               },
             },
           }} height={220} />
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            {Object.entries(resolvedData.denialsByProvider || { 'Hospital': 0.21, 'Specialist': 0.34, 'Clinic': 0.27, 'Diagnostic Center': 0.41 }).map(([provider, rate]) => (
-              <div key={provider} className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/5 border border-white/10">
-                <span className="text-xs text-white/70">{provider}</span>
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={{
+              visible: {
+                transition: {
+                  staggerChildren: 0.05,
+                },
+              },
+            }}
+            className="mt-4 grid grid-cols-2 gap-3"
+          >
+            {Object.entries(resolvedData.denialsByProvider || { 'Hospital': 0.21, 'Specialist': 0.34, 'Clinic': 0.27, 'Diagnostic Center': 0.41 }).map(([provider, rate], idx) => (
+              <motion.div
+                key={provider}
+                variants={{
+                  hidden: { opacity: 0, x: -10 },
+                  visible: { opacity: 1, x: 0 },
+                }}
+                whileHover={{ scale: 1.05 }}
+                className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/5 border border-white/10 hover:border-white/20 transition-all"
+              >
+                <span className="text-xs text-gray-800 font-semibold">{provider}</span>
                 <span className={`text-xs font-bold ${
-                  rate < 0.25 ? 'text-green-300' : rate < 0.35 ? 'text-amber-300' : 'text-red-300'
+                  rate < 0.25 ? 'text-emerald-700' : rate < 0.35 ? 'text-amber-700' : 'text-red-700'
                 }`}>{(rate * 100).toFixed(0)}%</span>
-              </div>
+              </motion.div>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
-        {/* Provider insight card */}
-        <div className="group backdrop-blur-xl bg-white/10 border border-white/20 rounded-xl p-6 hover:border-white/40 transition-all duration-300 hover:shadow-lg hover:shadow-white/10 hover:bg-white/[0.12]">
+        {/* Provider Insights */}
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0 },
+          }}
+          whileHover={{ boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)' }}
+          className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-xl p-6 transition-all"
+        >
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-2xl">💡</span>
-            <h3 className="text-lg font-bold text-cyan-300">Provider Insights</h3>
+            <AlertTriangle className="w-5 h-5 text-cyan-400" />
+            <h3 className="font-bold text-gray-800">Provider Insights</h3>
           </div>
-          <p className="text-xs text-white/50 mb-5">Key observations from provider-level denial analysis</p>
-          <div className="space-y-4">
+          <p className="text-xs text-gray-700 font-medium mb-5">Key observations from provider-level denial analysis</p>
+          <motion.div
+            className="space-y-3"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              visible: {
+                transition: {
+                  staggerChildren: 0.08,
+                },
+              },
+            }}
+          >
             {[
-              { icon: '🏥', label: 'Hospitals', rate: 0.21, note: 'Lowest denial rate — strong documentation compliance' },
-              { icon: '🔬', label: 'Specialists', rate: 0.34, note: 'Higher denials due to complex procedure coding' },
-              { icon: '🏪', label: 'Clinics', rate: 0.27, note: 'Moderate — often missing prior authorization' },
-              { icon: '🧪', label: 'Diagnostic Centers', rate: 0.41, note: 'Highest risk — frequent diagnosis-procedure mismatches' },
-            ].map(({ icon, label, rate, note }) => (
-              <div key={label} className="flex items-start gap-3 p-3 rounded-lg bg-white/5 border border-white/10">
-                <span className="text-2xl">{icon}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-semibold text-white/90">{label}</span>
-                    <span className={`text-sm font-bold ${
-                      rate < 0.25 ? 'text-green-300' : rate < 0.35 ? 'text-amber-300' : 'text-red-300'
-                    }`}>{(rate * 100).toFixed(0)}% denial</span>
-                  </div>
-                  <div className="w-full h-1.5 bg-white/10 rounded-full mb-1.5">
-                    <div className="h-full rounded-full transition-all duration-500" style={{
-                      width: `${rate * 100}%`,
-                      background: rate < 0.25 ? '#22d3ee' : rate < 0.35 ? '#f59e0b' : '#ef4444',
-                    }} />
-                  </div>
-                  <p className="text-xs text-white/50">{note}</p>
+              { label: 'Hospitals', rate: 0.21, note: 'Lowest denial rate — strong documentation compliance' },
+              { label: 'Specialists', rate: 0.34, note: 'Higher denials due to complex procedure coding' },
+              { label: 'Clinics', rate: 0.27, note: 'Moderate — often missing prior authorization' },
+              { label: 'Diagnostic Centers', rate: 0.41, note: 'Highest risk — frequent diagnosis-procedure mismatches' },
+            ].map(({ label, rate, note }, idx) => (
+              <motion.div
+                key={label}
+                variants={{
+                  hidden: { opacity: 0, x: -10 },
+                  visible: { opacity: 1, x: 0 },
+                }}
+                whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
+                className="p-3 rounded-lg bg-white/5 border border-white/10 transition-all"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-semibold text-gray-800">{label}</span>
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: idx * 0.08 + 0.3 }}
+                    className={`text-sm font-bold ${
+                      rate < 0.25 ? 'text-emerald-700' : rate < 0.35 ? 'text-amber-700' : 'text-red-700'
+                    }`}
+                  >
+                    {(rate * 100).toFixed(0)}% denial
+                  </motion.span>
                 </div>
-              </div>
+                <div className="w-full h-1.5 bg-white/10 rounded-full mb-2 overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${rate * 100}%` }}
+                    transition={{ duration: 0.6, delay: idx * 0.08 + 0.2, ease: 'easeOut' }}
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                      background: rate < 0.25 ? '#06b6d4' : rate < 0.35 ? '#f59e0b' : '#ef4444',
+                    }}
+                  />
+                </div>
+                <p className="text-xs text-gray-700 font-medium">{note}</p>
+              </motion.div>
             ))}
-          </div>
-        </div>
-      </div>
+          </motion.div>
+        </motion.div>
+      </motion.div>
 
       {/* Recent Predictions Table */}
-      <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-xl p-6 hover:border-white/40 transition-all duration-300">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+        whileHover={{ boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)' }}
+        className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-xl p-6 transition-all"
+      >
         <div className="flex items-center gap-2 mb-6">
-          <span className="text-2xl">🔍</span>
-          <h3 className="text-lg font-bold text-cyan-300">Recent Predictions</h3>
+          <BarChart3 className="w-5 h-5 text-cyan-400" />
+          <h3 className="font-bold text-gray-800">Recent Predictions</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <motion.table
+            className="w-full"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              visible: {
+                transition: {
+                  staggerChildren: 0.03,
+                },
+              },
+            }}
+          >
             <thead>
               <tr className="border-b border-white/10">
-                <th className="text-left py-4 px-5 text-xs font-bold text-cyan-300 uppercase tracking-wider">ID</th>
-                <th className="text-left py-4 px-5 text-xs font-bold text-cyan-300 uppercase tracking-wider">Payer</th>
-                <th className="text-left py-4 px-5 text-xs font-bold text-cyan-300 uppercase tracking-wider">Claim Amount</th>
-                <th className="text-left py-4 px-5 text-xs font-bold text-cyan-300 uppercase tracking-wider">Risk Level</th>
-                <th className="text-left py-4 px-5 text-xs font-bold text-cyan-300 uppercase tracking-wider">Probability</th>
+                <motion.th
+                  variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+                  className="text-left py-4 px-5 text-xs font-bold text-gray-800 uppercase tracking-wider"
+                >
+                  ID
+                </motion.th>
+                <motion.th
+                  variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+                  className="text-left py-4 px-5 text-xs font-bold text-gray-800 uppercase tracking-wider"
+                >
+                  Payer
+                </motion.th>
+                <motion.th
+                  variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+                  className="text-left py-4 px-5 text-xs font-bold text-gray-800 uppercase tracking-wider"
+                >
+                  Claim Amount
+                </motion.th>
+                <motion.th
+                  variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+                  className="text-left py-4 px-5 text-xs font-bold text-gray-800 uppercase tracking-wider"
+                >
+                  Risk Level
+                </motion.th>
+                <motion.th
+                  variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+                  className="text-left py-4 px-5 text-xs font-bold text-gray-800 uppercase tracking-wider"
+                >
+                  Probability
+                </motion.th>
               </tr>
             </thead>
             <tbody>
               {resolvedData.recentPredictions.map((pred, idx) => (
-                <tr 
-                  key={pred.id} 
-                  className="border-b border-white/5 hover:bg-white/5 transition-colors duration-200 group/row"
+                <motion.tr
+                  key={pred.id}
+                  variants={{
+                    hidden: { opacity: 0, x: -20 },
+                    visible: { opacity: 1, x: 0 },
+                  }}
+                  whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
+                  className="border-b border-white/5 transition-colors duration-200 group/row"
                 >
-                  <td className="py-4 px-5 text-sm text-white/80 font-medium group-hover/row:text-cyan-300">#<span className="font-bold">{pred.id}</span></td>
-                  <td className="py-4 px-5 text-sm text-white/80 group-hover/row:text-cyan-300">
-                    <div className="flex items-center gap-2">
-                      <span>{pred.payer}</span>
-                    </div>
+                  <td className="py-4 px-5 text-sm text-gray-800 font-medium group-hover/row:text-cyan-600">
+                    #{pred.id}
                   </td>
-                  <td className="py-4 px-5 text-sm font-semibold text-white/90 group-hover/row:text-green-300">
-                    ₹{pred.amount.toLocaleString('en-IN')}
+                  <td className="py-4 px-5 text-sm text-gray-800 group-hover/row:text-cyan-600">
+                    {pred.payer}
+                  </td>
+                  <td className="py-4 px-5 text-sm font-semibold text-emerald-700 group-hover/row:text-emerald-600">
+                    ${pred.amount.toLocaleString('en-US')}
                   </td>
                   <td className="py-4 px-5 text-sm">
-                    <span className={`px-3 py-1.5 rounded-full text-xs font-bold backdrop-blur-xl transition-all duration-200 ${
-                      pred.risk === 'Low' ? 'bg-green-500/30 text-green-300 border border-green-400/50' :
-                      pred.risk === 'Medium' ? 'bg-amber-500/30 text-amber-300 border border-amber-400/50' :
-                      'bg-red-500/30 text-red-300 border border-red-400/50'
-                    }`}>
-                      {pred.risk === 'Low' ? '✅' : pred.risk === 'Medium' ? '⚠️' : '🚨'} {pred.risk}
-                    </span>
+                    <motion.span
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: idx * 0.03 }}
+                      className={`px-3 py-1.5 rounded-full text-xs font-bold backdrop-blur-xl transition-all inline-block ${
+                        pred.risk === 'Low' ? 'bg-emerald-500/30 text-emerald-300 border border-emerald-400/50' :
+                        pred.risk === 'Medium' ? 'bg-amber-500/30 text-amber-300 border border-amber-400/50' :
+                        'bg-red-500/30 text-red-300 border border-red-400/50'
+                      }`}
+                    >
+                      {pred.risk === 'Low' ? '✓' : pred.risk === 'Medium' ? '⚠' : '✕'} {pred.risk}
+                    </motion.span>
                   </td>
-                  <td className="py-4 px-5 text-sm font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-blue-300">
+                  <td className="py-4 px-5 text-sm font-bold text-cyan-700">
                     {(pred.probability * 100).toFixed(1)}%
                   </td>
-                </tr>
+                </motion.tr>
               ))}
             </tbody>
-          </table>
+          </motion.table>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

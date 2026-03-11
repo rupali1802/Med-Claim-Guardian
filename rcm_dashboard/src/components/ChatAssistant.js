@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Send, MessageCircle, Sparkles, ArrowLeft } from 'lucide-react';
 
 // ---------------------------------------------
 //  Knowledge Base
@@ -34,7 +36,7 @@ const KB = [
   },
   {
     keys: ['payer','insurer','insurance company','star health','hdfc ergo','icici lombard','bajaj allianz','new india','which payer','payer risk'],
-    answer: `Payer Risk Comparison (from our Heatmap):\n\n• ICICI Lombard: ~35% avg denial rate - strictest on high-value claims and PA\n• HDFC ERGO: ~28% - strictest on coding accuracy\n• New India Assurance: ~25% - strictest on documentation completeness\n• Star Health: ~22% - lowest denial rate, good for most procedures\n• Bajaj Allianz: ~18% - strictest on timely filing\n\nRecommendations:\n• For ICICI Lombard: always get PA for procedures above ₹10,000\n• For HDFC ERGO: double-check all ICD/CPT codes before submission\n• For Bajaj Allianz: submit within 48 hours for best results\n• For New India Assurance: attach all clinical notes upfront\n• For Star Health: ensure prior authorization for specialist referrals\n\nCheck the Payer Heatmap tab to see denial rates broken down by payer and procedure type.`
+    answer: `Payer Risk Comparison (from our Heatmap):\n\n• ICICI Lombard: ~35% avg denial rate - strictest on high-value claims and PA\n• HDFC ERGO: ~28% - strictest on coding accuracy\n• New India Assurance: ~25% - strictest on documentation completeness\n• Star Health: ~22% - lowest denial rate, good for most procedures\n• Bajaj Allianz: ~18% - strictest on timely filing\n\nRecommendations:\n• For ICICI Lombard: always get PA for procedures above $500\n• For HDFC ERGO: double-check all ICD/CPT codes before submission\n• For Bajaj Allianz: submit within 48 hours for best results\n• For New India Assurance: attach all clinical notes upfront\n• For Star Health: ensure prior authorization for specialist referrals\n\nCheck the Payer Heatmap tab to see denial rates broken down by payer and procedure type.`
   },
   {
     keys: ['shap','explainability','feature importance','why predicted','how does ai decide','model explain','contributing factor'],
@@ -46,7 +48,7 @@ const KB = [
   },
   {
     keys: ['roi','return on investment','money saved','cost benefit','savings','financial','revenue'],
-    answer: `ROI and Proof of Value:\n\nTypical financial impact for a mid-size hospital or clinic with ₹2 Crore annual claims:\n\nBefore Med-Claim Guardian:\n• Denial rate: ~12%\n• Revenue lost to denials: ~₹24 Lakh/year\n• Staff time on rework: 120+ hrs/month\n\nAfter Med-Claim Guardian:\n• Denial rate: ~8% (33% reduction)\n• Revenue recovered: ~₹8 Lakh/year\n• Staff time saved: 75 hrs/month\n\nSummary:\n• Annual Savings: ~₹8,00,000\n• System Cost: ~₹5,00,000/yr\n• Net Benefit: ~₹3,00,000/yr\n• ROI: 60%+\n• Payback Period: 7-8 months\n\nSee the full breakdown in the ROI and POV tab.`
+    answer: `ROI and Proof of Value:\n\nTypical financial impact for a mid-size hospital or clinic with $2M annual claims:\n\nBefore Med-Claim Guardian:\n• Denial rate: ~12%\n• Revenue lost to denials: ~$240K/year\n• Staff time on rework: 120+ hrs/month\n\nAfter Med-Claim Guardian:\n• Denial rate: ~8% (33% reduction)\n• Revenue recovered: ~$80K/year\n• Staff time saved: 75 hrs/month\n\nSummary:\n• Annual Savings: ~$80,000\n• System Cost: ~$50,000/yr\n• Net Benefit: ~$30,000/yr\n• ROI: 60%+\n• Payback Period: 7-8 months\n\nSee the full breakdown in the ROI and POV tab.`
   },
   {
     keys: ['accuracy','how accurate','model performance','precision','recall','f1','reliable','trust'],
@@ -66,15 +68,15 @@ const KB = [
   },
   {
     keys: ['medicare','medicaid','private','insurance type','coverage','pmjay','esi','ayushman'],
-    answer: `Insurance Types in Our Model:\n\nGovernment (PMJAY - Pradhan Mantri Jan Arogya Yojana):\n• Covers economically weaker sections of society\n• Provides cashless treatment up to ₹5 lakh per family per year\n• Strict on medical necessity documentation\n• Timely filing window: 30 days from discharge\n\nESI (Employee State Insurance):\n• For organised sector employees earning below ₹21,000/month\n• Covers employees and their dependants\n• Requires ESI card and employer verification\n• Filing window: 15 days from date of service\n\nPrivate (Commercial Insurance):\n• Strictest prior authorisation requirements\n• Usually highest denial rates for high-value procedures\n• Most variation between payers (Star Health, HDFC ERGO, etc.)\n\nTip: Our model shows Private insurance with no prior authorisation is the highest-risk combination. Always get PA confirmed before a high-cost procedure for any Private insurance patient.`
+    answer: `Insurance Types in Our Model:\n\nGovernment (Medicare/Medicaid):\n• Covers lower-income populations\n• Provides up to $6,000 in benefits per person per year\n• Strict on medical necessity documentation\n• Timely filing window: 30 days from discharge\n\nCommercial Insurance:\n• For employees earning above $21,000/year\n• Covers employees and their dependants\n• Requires insurance card and employer verification\n• Filing window: 15 days from date of service\n\nPrivate (Commercial Insurance):\n• Strictest prior authorisation requirements\n• Usually highest denial rates for high-value procedures\n• Most variation between payers (UnitedHealth, Aetna, Cigna, etc.)\n\nTip: Our model shows Commercial insurance with no prior authorisation is the highest-risk combination. Always get PA confirmed before a high-cost procedure for any Commercial insurance patient.`
   },
   {
     keys: ['recommendation','suggest','tip','advice','best practice','what should i do'],
-    answer: `Smart Recommendations from Med-Claim Guardian:\n\nBefore Submission:\n• Run every claim through our predictor first\n• Fix any High Risk or Medium Risk claims before sending\n• Verify prior authorization for all Private insurance claims above ₹10,000\n• Ensure documentation is complete - attach all notes upfront\n• Submit within 48 hours of service or discharge date\n\nCoding Best Practices:\n• Use a code scrubber or encoder tool\n• Verify ICD-10 code is valid for the date of service\n• Ensure procedure code matches the diagnosis\n• Keep coding accuracy above 85%\n\nPayer Strategy:\n• Know each payer's specific requirements\n• Use the Payer Heatmap to identify high-risk combinations\n• Build PA templates for your most common procedures`
+    answer: `Smart Recommendations from Med-Claim Guardian:\n\nBefore Submission:\n• Run every claim through our predictor first\n• Fix any High Risk or Medium Risk claims before sending\n• Verify prior authorization for all Private insurance claims above $500\n• Ensure documentation is complete - attach all notes upfront\n• Submit within 48 hours of service or discharge date\n\nCoding Best Practices:\n• Use a code scrubber or encoder tool\n• Verify ICD-10 code is valid for the date of service\n• Ensure procedure code matches the diagnosis\n• Keep coding accuracy above 85%\n\nPayer Strategy:\n• Know each payer's specific requirements\n• Use the Payer Heatmap to identify high-risk combinations\n• Build PA templates for your most common procedures`
   },
   {
-    keys: ['amount','cost','expensive','high value','rupee','price','claim amount'],
-    answer: `Claim Amount and Denial Risk:\n\nClaim amount is the 3rd most important factor in our model at 15.6% importance.\n\nWhy high-amount claims get denied more:\n• Payers scrutinise large claims more carefully\n• Often triggers mandatory medical necessity review\n• More likely to require PA for high-value procedures\n• Greater chance of upcoding suspicion\n\nRisk thresholds observed:\n• ₹0 to ₹5,000: Baseline risk\n• ₹5,000 to ₹25,000: +5-10% denial risk\n• ₹25,000 to ₹1,00,000: +10-20% denial risk\n• ₹1,00,000+: +20-30% denial risk\n\nTips for high-value claims:\n• Always attach detailed medical necessity documentation\n• Get prior authorization regardless of insurance type\n• Submit with complete itemised billing\n• Use the What-If tool to see the exact impact`
+    keys: ['amount','cost','expensive','high value','dollar','price','claim amount'],
+    answer: `Claim Amount and Denial Risk:\n\nClaim amount is the 3rd most important factor in our model at 15.6% importance.\n\nWhy high-amount claims get denied more:\n• Payers scrutinise large claims more carefully\n• Often triggers mandatory medical necessity review\n• More likely to require PA for high-value procedures\n• Greater chance of upcoding suspicion\n\nRisk thresholds observed:\n• $0 to $5,000: Baseline risk\n• $5,000 to $25,000: +5-10% denial risk\n• $25,000 to $100,000: +10-20% denial risk\n• $100,000+: +20-30% denial risk\n\nTips for high-value claims:\n• Always attach detailed medical necessity documentation\n• Get prior authorization regardless of insurance type\n• Submit with complete itemised billing\n• Use the What-If tool to see the exact impact`
   },
   {
     keys: ['how to use','tutorial','guide','walkthrough','steps','navigate','tabs'],
@@ -140,7 +142,7 @@ function ChatAssistant({ onBack }) {
   const handleSubmit = (e) => { e.preventDefault(); sendMessage(inputValue); };
 
   const applyBold = (str) => str.split(/\*\*(.*?)\*\*/g).map((p, j) =>
-    j % 2 === 1 ? <strong key={j} style={{ color: '#0F4C81' }}>{p}</strong> : p
+    j % 2 === 1 ? <strong key={j} style={{ color: '#06b6d4', fontWeight: 700 }}>{p}</strong> : p
   );
 
   const fmtText = (text) => text.split('\n').map((line, i) => {
@@ -148,109 +150,213 @@ function ChatAssistant({ onBack }) {
     if (/^\d+\. /.test(line)) {
       const num = line.match(/^\d+/)[0];
       const rest = line.replace(/^\d+\. /, '');
-      return <div key={i} style={{ display:'flex', gap:8, marginBottom:3 }}><span style={{color:'#0F4C81',minWidth:16,flexShrink:0,fontWeight:700}}>{num}.</span><span>{applyBold(rest)}</span></div>;
+      return <div key={i} style={{ display:'flex', gap:8, marginBottom:3 }}><span style={{color:'#06b6d4',minWidth:16,flexShrink:0,fontWeight:700}}>{num}.</span><span>{applyBold(rest)}</span></div>;
     }
-    if (line.startsWith('• ')) return <div key={i} style={{ display:'flex', gap:8, marginBottom:2 }}><span style={{color:'#008BA3',flexShrink:0}}>•</span><span>{applyBold(line.slice(2))}</span></div>;
+    if (line.startsWith('• ')) return <div key={i} style={{ display:'flex', gap:8, marginBottom:2 }}><span style={{color:'#0ea5e9',flexShrink:0}}>•</span><span>{applyBold(line.slice(2))}</span></div>;
     return <div key={i} style={{ marginBottom: 2 }}>{applyBold(line)}</div>;
   });
 
   return (
-    <div style={{ display:'flex', flexDirection:'column', height:'100vh', backgroundColor:'#ffffff', overflow:'hidden' }}>
-
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      style={{ display:'flex', flexDirection:'column', height:'100vh', background:'linear-gradient(135deg, #0f172a 0%, #1e3a8a 25%, #1e293b 50%, #0c4a6e 75%, #0f172a 100%)', overflow:'hidden' }}
+    >
       {/* Header */}
-      <div style={{ backgroundColor:'#ffffff', borderBottom:'1px solid #0F4C81', padding:'14px 20px', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        style={{ background: 'linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 58, 138, 0.5) 100%)', backdropFilter: 'blur(10px)', borderBottom:'1px solid rgba(255, 255, 255, 0.1)', padding:'16px 20px', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'space-between' }}
+      >
         <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-          <div style={{ width:40, height:40, borderRadius:10, background:'linear-gradient(135deg,#0F4C81,#008BA3)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:18, color:'#ffffff', fontWeight:700 }}>AI</div>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            style={{ width:44, height:44, borderRadius:12, background:'linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:18, color:'#ffffff', fontWeight:700 }}
+          >
+            <Sparkles className="w-6 h-6" />
+          </motion.div>
           <div>
-            <div style={{ color:'#0F4C81', fontWeight:700, fontSize:16 }}>Med-Claim Guardian Assistant</div>
-            <div style={{ color:'#6b7280', fontSize:12, marginTop:2 }}>
-              <span style={{ display:'inline-block', width:7, height:7, backgroundColor:'#10b981', borderRadius:'50%', marginRight:5, verticalAlign:'middle' }} />
-              Online · Ask me anything about healthcare claims
+            <h2 style={{ color:'#06b6d4', fontWeight:700, fontSize:16, margin:0 }}>Med-Claim Guardian</h2>
+            <div style={{ color:'#a0aec0', fontSize:12, marginTop:4, display:'flex', alignItems:'center', gap:6 }}>
+              <motion.div
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                style={{ width:6, height:6, backgroundColor:'#10b981', borderRadius:'50%' }}
+              />
+              <span>Online · Healthcare Claims Expert</span>
             </div>
           </div>
         </div>
         {onBack && (
-          <button onClick={onBack} style={{ backgroundColor:'#f3f4f6', border:'1px solid #d1d5db', color:'#4b5563', padding:'8px 16px', borderRadius:8, cursor:'pointer', fontSize:13, fontWeight:600 }}>
-            Back to Dashboard
-          </button>
+          <motion.button
+            whileHover={{ scale: 1.05, backgroundColor: 'rgba(15, 23, 42, 0.8)' }}
+            whileTap={{ scale: 0.95 }}
+            onClick={onBack}
+            style={{ background: 'rgba(255, 255, 255, 0.1)', border:'1px solid rgba(255, 255, 255, 0.2)', backdropFilter: 'blur(8px)', color:'#cbd5e1', padding:'8px 14px', borderRadius:8, cursor:'pointer', fontSize:13, fontWeight:600, display:'flex', alignItems:'center', gap:6 }}
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </motion.button>
         )}
-      </div>
+      </motion.div>
 
       {/* Messages */}
-      <div style={{ flex:1, overflowY:'auto', padding:'16px', display:'flex', flexDirection:'column', gap:10, backgroundColor:'#f9fafb' }}>
-        {messages.map(msg => (
-          <div key={msg.id} style={{ display:'flex', justifyContent: msg.sender==='user'?'flex-end':'flex-start', alignItems:'flex-end', gap:8 }}>
-            {msg.sender === 'bot' && (
-              <div style={{ width:28, height:28, borderRadius:'50%', background:'linear-gradient(135deg,#0F4C81,#008BA3)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, color:'#fff', fontWeight:700, flexShrink:0 }}>AI</div>
-            )}
-            <div style={{
-              maxWidth:'70%',
-              backgroundColor: msg.sender==='user' ? '#0F4C81' : '#ffffff',
-              border: msg.sender==='bot' ? '1px solid #d1d5db' : 'none',
-              borderRadius: msg.sender==='user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-              padding:'11px 15px', color: msg.sender==='user'?'#ffffff':'#374151', fontSize:13.5, lineHeight:1.6, boxShadow: msg.sender==='bot'?'0 1px 2px rgba(0,0,0,0.05)':'none'
-            }}>
-              {fmtText(msg.text)}
-              <div style={{ fontSize:10, color: msg.sender==='user'?'#d1d5db':'#9ca3af', marginTop:5, textAlign:'right' }}>
-                {msg.timestamp.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+      <motion.div
+        style={{ flex:1, overflowY:'auto', padding:'16px', display:'flex', flexDirection:'column', gap:12 }}
+      >
+        <AnimatePresence mode="wait">
+          {messages.map((msg, idx) => (
+            <motion.div
+              key={msg.id}
+              initial={{ opacity: 0, y: 10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3, delay: idx * 0.05 }}
+              style={{ display:'flex', justifyContent: msg.sender==='user'?'flex-end':'flex-start', alignItems:'flex-end', gap:8 }}
+            >
+              {msg.sender === 'bot' && (
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  style={{ width:32, height:32, borderRadius:'50%', background:'linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, color:'#fff', fontWeight:700, flexShrink:0 }}
+                >
+                  <MessageCircle className="w-5 h-5" />
+                </motion.div>
+              )}
+              <motion.div
+                whileHover={{ y: msg.sender === 'user' ? -2 : -2 }}
+                style={{
+                  maxWidth:'70%',
+                  background: msg.sender==='user' ? 'linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%)' : 'rgba(255, 255, 255, 0.08)',
+                  border: msg.sender==='bot' ? '1px solid rgba(255, 255, 255, 0.2)' : 'none',
+                  backdropFilter: 'blur(12px)',
+                  borderRadius: msg.sender==='user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+                  padding:'12px 16px', color: msg.sender==='user'?'#ffffff':'#e0e7ff', fontSize:13.5, lineHeight:1.6, boxShadow: msg.sender==='bot'?'0 8px 32px rgba(0, 0, 0, 0.2)':'0 4px 16px rgba(6, 182, 212, 0.2)'
+                }}
+              >
+                {fmtText(msg.text)}
+                <div style={{ fontSize:10, color: msg.sender==='user'?'rgba(255, 255, 255, 0.7)':'rgba(226, 232, 240, 0.6)', marginTop:6, textAlign:'right' }}>
+                  {msg.timestamp.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+                </div>
+              </motion.div>
+              {msg.sender === 'user' && (
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  style={{ width:32, height:32, borderRadius:'50%', background:'linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, color:'#fff', fontWeight:700, flexShrink:0 }}
+                >
+                  U
+                </motion.div>
+              )}
+            </motion.div>
+          ))}
+          {isTyping && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              style={{ display:'flex', alignItems:'flex-end', gap:8 }}
+            >
+              <div style={{ width:32, height:32, borderRadius:'50%', background:'linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, color:'#fff', fontWeight:700 }}>
+                <MessageCircle className="w-5 h-5" />
               </div>
-            </div>
-            {msg.sender === 'user' && (
-              <div style={{ width:28, height:28, borderRadius:'50%', backgroundColor:'#0F4C81', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, color:'#fff', fontWeight:700, flexShrink:0 }}>U</div>
-            )}
-          </div>
-        ))}
-        {isTyping && (
-          <div style={{ display:'flex', alignItems:'flex-end', gap:8 }}>
-            <div style={{ width:28, height:28, borderRadius:'50%', background:'linear-gradient(135deg,#0F4C81,#008BA3)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, color:'#fff', fontWeight:700 }}>AI</div>
-            <div style={{ backgroundColor:'#ffffff', border:'1px solid #d1d5db', borderRadius:'16px 16px 16px 4px', padding:'12px 16px', display:'flex', gap:5, alignItems:'center', boxShadow:'0 1px 2px rgba(0,0,0,0.05)' }}>
-              {[0,0.2,0.4].map((d,i) => <div key={i} style={{ width:7, height:7, borderRadius:'50%', backgroundColor:'#0F4C81', animation:'chatBounce 1.2s infinite', animationDelay:`${d}s` }} />)}
-            </div>
-          </div>
-        )}
+              <div style={{ background: 'rgba(255, 255, 255, 0.08)', border:'1px solid rgba(255, 255, 255, 0.2)', backdropFilter: 'blur(12px)', borderRadius:'18px 18px 18px 4px', padding:'14px 18px', display:'flex', gap:6, alignItems:'center' }}>
+                {[0,0.2,0.4].map((d,i) => (
+                  <motion.div
+                    key={i}
+                    animate={{ y: [0, -8, 0] }}
+                    transition={{ duration: 1.2, repeat: Infinity, delay: d }}
+                    style={{ width:8, height:8, borderRadius:'50%', background:'linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%)' }}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <div ref={bottomRef} />
-      </div>
+      </motion.div>
 
       {/* Quick Topics */}
-      <div style={{ backgroundColor:'#f3f4f6', borderTop:'1px solid #e5e7eb', padding:'8px 16px', flexShrink:0 }}>
-        <div style={{ color:'#6b7280', fontSize:10, marginBottom:6, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.8px' }}>Quick Topics</div>
-        <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-          {QUICK_TOPICS.map(t => (
-            <button key={t.q} onClick={() => sendMessage(t.q)} disabled={isTyping}
-              style={{ backgroundColor:'#ffffff', border:'1px solid #d1d5db', color:'#4b5563', padding:'4px 12px', borderRadius:20, cursor: isTyping?'not-allowed':'pointer', fontSize:12, opacity: isTyping?0.5:1, transition:'all .15s' }}
-              onMouseEnter={e=>{ if(!isTyping){e.currentTarget.style.backgroundColor='#eff6ff'; e.currentTarget.style.color='#0F4C81'; e.currentTarget.style.borderColor='#0F4C81'; }}}
-              onMouseLeave={e=>{ e.currentTarget.style.backgroundColor='#ffffff'; e.currentTarget.style.color='#4b5563'; e.currentTarget.style.borderColor='#d1d5db'; }}
-            >{t.label}</button>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        style={{ background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(8px)', borderTop:'1px solid rgba(255, 255, 255, 0.1)', padding:'12px 16px', flexShrink:0 }}
+      >
+        <div style={{ color:'#a0aec0', fontSize:10, marginBottom:8, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.8px' }}>Quick Topics</div>
+        <motion.div
+          style={{ display:'flex', flexWrap:'wrap', gap:6 }}
+          initial="hidden"
+          animate="visible"
+          variants={{
+            visible: {
+              transition: {
+                staggerChildren: 0.05,
+              },
+            },
+          }}
+        >
+          {QUICK_TOPICS.map((t, idx) => (
+            <motion.button
+              key={t.q}
+              variants={{
+                hidden: { opacity: 0, scale: 0.8 },
+                visible: { opacity: 1, scale: 1 },
+              }}
+              whileHover={{ scale: isTyping ? 1 : 1.05, backgroundColor: isTyping ? 'rgba(255, 255, 255, 0.08)' : 'rgba(6, 182, 212, 0.2)' }}
+              whileTap={{ scale: isTyping ? 1 : 0.95 }}
+              onClick={() => sendMessage(t.q)}
+              disabled={isTyping}
+              style={{ background: 'rgba(255, 255, 255, 0.08)', border:'1px solid rgba(255, 255, 255, 0.2)', backdropFilter: 'blur(8px)', color:'#cbd5e1', padding:'6px 14px', borderRadius:20, cursor: isTyping?'not-allowed':'pointer', fontSize:12, fontWeight:500, opacity: isTyping?0.4:1, transition:'all .2s' }}
+            >{t.label}</motion.button>
           ))}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Input */}
-      <div style={{ backgroundColor:'#ffffff', borderTop:'2px solid #0F4C81', padding:'12px 16px', flexShrink:0 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        style={{ background: 'linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 58, 138, 0.5) 100%)', backdropFilter: 'blur(10px)', borderTop:'1.5px solid rgba(6, 182, 212, 0.3)', padding:'14px 16px', flexShrink:0 }}
+      >
         <form onSubmit={handleSubmit} style={{ display:'flex', gap:10 }}>
-          <input
+          <motion.input
+            whileFocus={{ boxShadow: '0 0 20px rgba(6, 182, 212, 0.4)' }}
             ref={inputRef}
             type="text"
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
-            placeholder="Type your question here and press Enter or click Send..."
+            placeholder="Ask anything about healthcare claims..."
             disabled={isTyping}
-            style={{ flex:1, backgroundColor:'#ffffff', border:'1.5px solid #d1d5db', borderRadius:10, padding:'11px 15px', color:'#1f2937', fontSize:14, outline:'none' }}
-            onFocus={e => e.target.style.borderColor='#0F4C81'}
-            onBlur={e => e.target.style.borderColor='#d1d5db'}
+            style={{ flex:1, background:'rgba(255, 255, 255, 0.08)', border:'1.5px solid rgba(255, 255, 255, 0.2)', backdropFilter: 'blur(8px)', borderRadius:10, padding:'12px 16px', color:'#e0e7ff', fontSize:14, outline:'none' }}
           />
-          <button type="submit" disabled={isTyping || !inputValue.trim()}
-            style={{ background: isTyping||!inputValue.trim() ? '#e5e7eb' : 'linear-gradient(135deg,#0F4C81,#008BA3)', border:'none', borderRadius:10, padding:'11px 22px', color: isTyping||!inputValue.trim() ? '#9ca3af' : '#ffffff', fontWeight:700, fontSize:14, cursor: isTyping||!inputValue.trim()?'not-allowed':'pointer', transition:'all .2s', whiteSpace:'nowrap' }}>
+          <motion.button
+            type="submit"
+            disabled={isTyping || !inputValue.trim()}
+            whileHover={{ scale: isTyping||!inputValue.trim() ? 1 : 1.05 }}
+            whileTap={{ scale: isTyping||!inputValue.trim() ? 1 : 0.95 }}
+            style={{ background: isTyping||!inputValue.trim() ? 'rgba(255, 255, 255, 0.1)' : 'linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%)', border:'none', borderRadius:10, padding:'12px 20px', color: isTyping||!inputValue.trim() ? '#71717a' : '#ffffff', fontWeight:700, fontSize:14, cursor: isTyping||!inputValue.trim()?'not-allowed':'pointer', transition:'all .2s', whiteSpace:'nowrap', display:'flex', alignItems:'center', gap:6 }}
+          >
+            {isTyping ? (
+              <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity }} style={{ display:'inline-flex' }}>
+                <Send className="w-4 h-4" />
+              </motion.div>
+            ) : (
+              <Send className="w-4 h-4" />
+            )}
             Send
-          </button>
+          </motion.button>
         </form>
-        <div style={{ color:'#6b7280', fontSize:11, marginTop:5, textAlign:'center' }}>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.7 }}
+          style={{ color:'#a0aec0', fontSize:11, marginTop:6, textAlign:'center' }}
+        >
           Press Enter to send · Powered by Med-Claim Guardian AI
-        </div>
-      </div>
-
-      <style>{`@keyframes chatBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }`}</style>
-    </div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 }
 

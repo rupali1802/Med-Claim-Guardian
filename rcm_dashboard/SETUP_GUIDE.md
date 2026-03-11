@@ -100,7 +100,7 @@ Wait for compilation to complete. The app will automatically open in your defaul
    Procedure Code: PROC_A
    Diagnosis Code: DX1
    Provider Type: Specialist
-   Claim Amount: ₹5,000
+   Claim Amount: $5,000
    Prior Authorization: yes
    Documentation: yes
    Coding Accuracy: 95%

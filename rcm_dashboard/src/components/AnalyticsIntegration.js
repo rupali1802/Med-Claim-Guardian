@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { TrendingUp, BarChart3, AlertCircle, CheckCircle, TrendingDown, Activity } from 'lucide-react';
 import axios from 'axios';
 
 /**
@@ -9,6 +11,83 @@ import axios from 'axios';
  */
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
+// CSS Styles for KPI Cards
+const kpiStyles = `
+  .kpi-analytics-card {
+    position: relative;
+    border-radius: 16px;
+    padding: 22px 24px 20px;
+    overflow: hidden;
+    transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
+                box-shadow 0.22s ease,
+                border-color 0.22s ease;
+    cursor: default;
+    backdrop-filter: blur(12px);
+  }
+  .kpi-analytics-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      var(--kpi-accent) 0%,
+      transparent 55%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+                  linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .kpi-icon-ring {
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+  .kpi-value-text {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .kpi-label-text {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: #94A3B8;
+  }
+  .kpi-sub-text {
+    font-size: 11.5px;
+    color: #64748B;
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+  .kpi-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--kpi-accent), transparent);
+    opacity: 0.2;
+    margin: 14px 0 12px;
+  }
+`;
+
+// Inject styles
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = kpiStyles;
+  document.head.appendChild(styleSheet);
+}
 
 // Hook to fetch analytics data
 export const useAnalytics = () => {
@@ -124,122 +203,91 @@ export const KPICards = ({ analytics }) => {
     },
     {
       ...KPI_CARD_META[3],
-      value: `₹${(overall.avg_claim_amount / 100000).toFixed(1)}L`,
-      sub: `Total: ₹${(overall.total_claim_amount / 10000000).toFixed(1)}Cr`,
+      value: `$${(overall.avg_claim_amount / 1000).toFixed(1)}K`,
+      sub: `Total: $${(overall.total_claim_amount / 1000000).toFixed(1)}M`,
     },
   ];
 
   return (
-    <>
-      <style>{`
-        .kpi-analytics-card {
-          position: relative;
-          border-radius: 16px;
-          padding: 22px 24px 20px;
-          overflow: hidden;
-          transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
-                      box-shadow 0.22s ease,
-                      border-color 0.22s ease;
-          cursor: default;
-          backdrop-filter: blur(12px);
-        }
-        .kpi-analytics-card::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          border-radius: 16px;
-          padding: 1px;
-          background: linear-gradient(
-            135deg,
-            var(--kpi-accent) 0%,
-            transparent 55%
-          );
-          -webkit-mask: linear-gradient(#fff 0 0) content-box,
-                        linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          opacity: 0.55;
-          pointer-events: none;
-        }
-        .kpi-analytics-card::after {
-          content: '';
-          position: absolute;
-          top: -30%;
-          right: -10%;
-          width: 120px;
-          height: 120px;
-          border-radius: 50%;
-          background: radial-gradient(circle, var(--kpi-glow) 0%, transparent 70%);
-          pointer-events: none;
-        }
-        .kpi-analytics-card:hover {
-          transform: translateY(-5px) scale(1.01);
-          box-shadow: 0 20px 48px var(--kpi-glow), 0 4px 12px rgba(0,0,0,0.4);
-          border-color: var(--kpi-accent) !important;
-        }
-        .kpi-icon-ring {
-          width: 40px;
-          height: 40px;
-          border-radius: 11px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-          transition: transform 0.2s ease;
-        }
-        .kpi-analytics-card:hover .kpi-icon-ring {
-          transform: scale(1.12);
-        }
-        .kpi-value-text {
-          font-size: 30px;
-          font-weight: 800;
-          line-height: 1.1;
-          letter-spacing: -0.02em;
-          font-variant-numeric: tabular-nums;
-        }
-        .kpi-label-text {
-          font-size: 11px;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.09em;
-          color: #94A3B8;
-        }
-        .kpi-sub-text {
-          font-size: 11.5px;
-          color: #64748B;
-          margin-top: 6px;
-          line-height: 1.4;
-        }
-        .kpi-divider {
-          width: 100%;
-          height: 1px;
-          background: linear-gradient(90deg, var(--kpi-accent), transparent);
-          opacity: 0.2;
-          margin: 14px 0 12px;
-        }
-      `}</style>
-
-      <div style={{
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
         gap: '16px',
-      }}>
-        {cardData.map((card) => (
-          <div
-            key={card.label}
-            className="kpi-analytics-card"
+      }}
+    >
+      {cardData.map((card, idx) => (
+        <motion.div
+          key={card.label}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: idx * 0.05, duration: 0.4 }}
+          whileHover={{ y: -5, boxShadow: `0 25px 50px ${card.glow}` }}
+          className="kpi-analytics-card"
+          style={{
+            '--kpi-accent': card.accent,
+            '--kpi-glow': card.glow,
+            background: `linear-gradient(145deg, ${card.bgFrom}, ${card.bgTo})`,
+            border: `1px solid ${card.accent}2E`,
+            boxShadow: `0 4px 24px rgba(0,0,0,0.25), inset 0 1px 0 ${card.accent}18`,
+            position: 'relative',
+            borderRadius: '16px',
+            padding: '22px 24px 20px',
+            overflow: 'hidden',
+            transition: 'all 0.22s cubic-bezier(0.34,1.56,0.64,1)',
+            cursor: 'default',
+            backdropFilter: 'blur(12px)',
+          }}
+        >
+          {/* Animated gradient border */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.55 }}
+            transition={{ delay: idx * 0.05 + 0.2 }}
             style={{
-              '--kpi-accent': card.accent,
-              '--kpi-glow':   card.glow,
-              background: `linear-gradient(145deg, ${card.bgFrom}, ${card.bgTo})`,
-              border: `1px solid ${card.accent}2E`,
-              boxShadow: `0 4px 24px rgba(0,0,0,0.25), inset 0 1px 0 ${card.accent}18`,
+              position: 'absolute',
+              inset: 0,
+              borderRadius: '16px',
+              padding: '1px',
+              background: `linear-gradient(135deg, ${card.accent} 0%, transparent 55%)`,
+              WebkitMaskImage: `linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)`,
+              WebkitMaskComposite: 'xor',
+              maskComposite: 'exclude',
+              pointerEvents: 'none',
             }}
-          >
+          />
+
+          {/* Glow orb */}
+          <motion.div
+            animate={{ opacity: [0.5, 0.8, 0.5] }}
+            transition={{ duration: 4, repeat: Infinity }}
+            style={{
+              position: 'absolute',
+              top: '-30%',
+              right: '-10%',
+              width: '120px',
+              height: '120px',
+              borderRadius: '50%',
+              background: `radial-gradient(circle, ${card.glow} 0%, transparent 70%)`,
+              pointerEvents: 'none',
+            }}
+          />
+
+          {/* Content */}
+          <div style={{ position: 'relative', zIndex: 1 }}>
             {/* Header row: label + icon */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: idx * 0.05 + 0.1 }}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}
+            >
               <span className="kpi-label-text">{card.label}</span>
-              <div
+              <motion.div
+                whileHover={{ scale: 1.12 }}
                 className="kpi-icon-ring"
                 style={{
                   background: `${card.accent}18`,
@@ -248,25 +296,41 @@ export const KPICards = ({ analytics }) => {
                 }}
               >
                 {card.icon}
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
             {/* Primary value */}
-            <p
+            <motion.p
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: idx * 0.05 + 0.2, duration: 0.4 }}
               className="kpi-value-text"
               style={{ color: card.accent }}
             >
               {card.value}
-            </p>
+            </motion.p>
 
-            <div className="kpi-divider" />
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ delay: idx * 0.05 + 0.3, duration: 0.4 }}
+              className="kpi-divider"
+              style={{ originX: 0 }}
+            />
 
             {/* Sub label */}
-            <p className="kpi-sub-text">{card.sub}</p>
+            <motion.p
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.05 + 0.35 }}
+              className="kpi-sub-text"
+            >
+              {card.sub}
+            </motion.p>
           </div>
-        ))}
-      </div>
-    </>
+        </motion.div>
+      ))}
+    </motion.div>
   );
 };
 
@@ -275,43 +339,104 @@ export const TopProceduresTable = ({ procedures }) => {
   if (!procedures) return null;
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h3 className="text-lg font-semibold mb-4 text-gray-800">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.1 }}
+      whileHover={{ boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)' }}
+      className="bg-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl p-6 border border-white/20 transition-all duration-300 overflow-hidden"
+    >
+      <motion.h3
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.15 }}
+        className="text-xl font-bold text-cyan-300 mb-6 flex items-center gap-2"
+      >
+        <BarChart3 className="w-5 h-5" />
         Top Procedures with Highest Denial Rate
-      </h3>
+      </motion.h3>
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <motion.table
+          className="w-full text-sm"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            visible: {
+              transition: {
+                staggerChildren: 0.05,
+              },
+            },
+          }}
+        >
           <thead>
-            <tr className="border-b border-gray-200">
-              <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Rank</th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Procedure</th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Total Claims</th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Denied</th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Denial Rate</th>
+            <tr className="border-b border-white/10">
+              <motion.th
+                variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+                className="text-left py-3 px-4 text-gray-300 font-semibold"
+              >
+                Rank
+              </motion.th>
+              <motion.th
+                variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+                className="text-left py-3 px-4 text-gray-300 font-semibold"
+              >
+                Procedure
+              </motion.th>
+              <motion.th
+                variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+                className="text-left py-3 px-4 text-gray-300 font-semibold"
+              >
+                Total Claims
+              </motion.th>
+              <motion.th
+                variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+                className="text-left py-3 px-4 text-gray-300 font-semibold"
+              >
+                Denied
+              </motion.th>
+              <motion.th
+                variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+                className="text-left py-3 px-4 text-gray-300 font-semibold"
+              >
+                Denial Rate
+              </motion.th>
             </tr>
           </thead>
           <tbody>
-            {procedures.map((proc) => (
-              <tr key={proc.procedure_code} className="border-b border-gray-100 hover:bg-gray-50">
-                <td className="py-3 px-4 text-sm font-bold text-gray-700">{proc.rank}</td>
-                <td className="py-3 px-4 text-sm text-gray-700">{proc.procedure_code}</td>
-                <td className="py-3 px-4 text-sm text-gray-700">{proc.total_claims}</td>
-                <td className="py-3 px-4 text-sm text-gray-700">{proc.denied_claims}</td>
-                <td className="py-3 px-4 text-sm">
-                  <span className={`font-semibold ${
-                    proc.denial_rate > 0.35 ? 'text-red-600' :
-                    proc.denial_rate > 0.30 ? 'text-orange-600' :
-                    'text-green-600'
-                  }`}>
+            {procedures.map((proc, idx) => (
+              <motion.tr
+                key={proc.procedure_code}
+                variants={{
+                  hidden: { opacity: 0, x: -20 },
+                  visible: { opacity: 1, x: 0 },
+                }}
+                whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
+                className="border-b border-white/10 transition-colors"
+              >
+                <td className="py-3 px-4 text-gray-300 font-semibold">{proc.rank}</td>
+                <td className="py-3 px-4 text-gray-200">{proc.procedure_code}</td>
+                <td className="py-3 px-4 text-gray-200">{proc.total_claims}</td>
+                <td className="py-3 px-4 text-gray-200">{proc.denied_claims}</td>
+                <td className="py-3 px-4">
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: idx * 0.05 }}
+                    className={`font-semibold px-3 py-1 rounded-lg ${
+                      proc.denial_rate > 0.35 ? 'text-red-300 bg-red-500/20' :
+                      proc.denial_rate > 0.30 ? 'text-amber-300 bg-amber-500/20' :
+                      'text-emerald-300 bg-emerald-500/20'
+                    }`}
+                  >
                     {proc.denial_rate_percent}
-                  </span>
+                  </motion.span>
                 </td>
-              </tr>
+              </motion.tr>
             ))}
           </tbody>
-        </table>
+        </motion.table>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -350,71 +475,157 @@ export const ClaimAmountInsights = ({ comparison }) => {
   const comp = comparison.comparison;
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h3 className="text-lg font-semibold mb-4 text-gray-800">Claim Amount Analysis</h3>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+      whileHover={{ boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)' }}
+      className="bg-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl p-6 border border-white/20 transition-all duration-300"
+    >
+      <motion.h3
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.25 }}
+        className="text-xl font-bold text-cyan-300 mb-6 flex items-center gap-2"
+      >
+        <Activity className="w-5 h-5" />
+        Claim Amount Analysis
+      </motion.h3>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={{
+          visible: {
+            transition: {
+              staggerChildren: 0.1,
+            },
+          },
+        }}
+        className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6"
+      >
         {/* Denied Claims */}
-        <div className="bg-red-50 border border-red-200 rounded p-4">
-          <h4 className="font-semibold text-red-900 mb-3">Denied Claims</h4>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-gray-700">Count:</span>
-              <span className="font-semibold">{denied.count.toLocaleString()}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-700">Average:</span>
-              <span className="font-semibold">₹{denied.avg_amount.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-700">Median:</span>
-              <span className="font-semibold">₹{denied.median_amount.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-700">Range:</span>
-              <span className="font-semibold">
-                ₹{denied.min_amount.toFixed(0)} - ₹{denied.max_amount.toFixed(0)}
-              </span>
-            </div>
-          </div>
-        </div>
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, x: -20 },
+            visible: { opacity: 1, x: 0 },
+          }}
+          whileHover={{ y: -5 }}
+          className="bg-red-900/20 border border-red-400/30 rounded-xl p-4 transition-all"
+        >
+          <motion.h4
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="font-bold text-red-300 mb-4 flex items-center gap-2"
+          >
+            <TrendingDown className="w-4 h-4" />
+            Denied Claims
+          </motion.h4>
+          <motion.div
+            className="space-y-2 text-sm"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              visible: {
+                transition: {
+                  staggerChildren: 0.05,
+                },
+              },
+            }}
+          >
+            {[
+              { label: 'Count:', value: denied.count.toLocaleString() },
+              { label: 'Average:', value: `$${denied.avg_amount.toFixed(2)}` },
+              { label: 'Median:', value: `$${denied.median_amount.toFixed(2)}` },
+              { label: 'Range:', value: `$${denied.min_amount.toFixed(0)} - $${denied.max_amount.toFixed(0)}` },
+            ].map((item, idx) => (
+              <motion.div
+                key={idx}
+                variants={{
+                  hidden: { opacity: 0, x: -10 },
+                  visible: { opacity: 1, x: 0 },
+                }}
+                className="flex justify-between"
+              >
+                <span className="text-gray-300">{item.label}</span>
+                <span className="font-semibold text-red-300">{item.value}</span>
+              </motion.div>
+            ))}
+          </motion.div>
+        </motion.div>
 
         {/* Approved Claims */}
-        <div className="bg-green-50 border border-green-200 rounded p-4">
-          <h4 className="font-semibold text-green-900 mb-3">Approved Claims</h4>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-gray-700">Count:</span>
-              <span className="font-semibold">{approved.count.toLocaleString()}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-700">Average:</span>
-              <span className="font-semibold">₹{approved.avg_amount.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-700">Median:</span>
-              <span className="font-semibold">₹{approved.median_amount.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-700">Range:</span>
-              <span className="font-semibold">
-                ₹{approved.min_amount.toFixed(0)} - ₹{approved.max_amount.toFixed(0)}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, x: 20 },
+            visible: { opacity: 1, x: 0 },
+          }}
+          whileHover={{ y: -5 }}
+          className="bg-emerald-900/20 border border-emerald-400/30 rounded-xl p-4 transition-all"
+        >
+          <motion.h4
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.35 }}
+            className="font-bold text-emerald-300 mb-4 flex items-center gap-2"
+          >
+            <TrendingUp className="w-4 h-4" />
+            Approved Claims
+          </motion.h4>
+          <motion.div
+            className="space-y-2 text-sm"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              visible: {
+                transition: {
+                  staggerChildren: 0.05,
+                },
+              },
+            }}
+          >
+            {[
+              { label: 'Count:', value: approved.count.toLocaleString() },
+              { label: 'Average:', value: `$${approved.avg_amount.toFixed(2)}` },
+              { label: 'Median:', value: `$${approved.median_amount.toFixed(2)}` },
+              { label: 'Range:', value: `$${approved.min_amount.toFixed(0)} - $${approved.max_amount.toFixed(0)}` },
+            ].map((item, idx) => (
+              <motion.div
+                key={idx}
+                variants={{
+                  hidden: { opacity: 0, x: 10 },
+                  visible: { opacity: 1, x: 0 },
+                }}
+                className="flex justify-between"
+              >
+                <span className="text-gray-300">{item.label}</span>
+                <span className="font-semibold text-emerald-300">{item.value}</span>
+              </motion.div>
+            ))}
+          </motion.div>
+        </motion.div>
+      </motion.div>
 
       {/* Key Insight */}
-      <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded p-3">
-        <p className="text-sm text-yellow-900">
-          <strong>Insight:</strong> Denied claims are on average{' '}
-          <span className="font-semibold">{comp.avg_amount_difference_percent}</span> higher
-          (₹{comp.avg_amount_difference.toFixed(2)}) than approved claims, suggesting claim
-          amount may be a denial factor.
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        whileHover={{ y: -3 }}
+        className="bg-amber-900/20 border border-amber-400/30 rounded-xl p-4 transition-all"
+      >
+        <p className="text-sm text-amber-200 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+          <span>
+            <strong>Insight:</strong> Denied claims are on average{' '}
+            <span className="font-semibold text-amber-300">{comp.avg_amount_difference_percent}</span> higher
+            (${comp.avg_amount_difference.toFixed(2)}) than approved claims, suggesting claim
+            amount may be a denial factor.
+          </span>
         </p>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
@@ -423,63 +634,168 @@ export const AnalyticsDashboardPage = () => {
   const { analytics, loading, error } = useAnalytics();
 
   if (loading) {
-    return <div className="p-8 text-center">Loading analytics...</div>;
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="p-8 text-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen flex items-center justify-center"
+      >
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+          className="w-12 h-12 border-3 border-cyan-400 border-t-transparent rounded-full"
+        />
+        <span className="ml-4 text-cyan-300 text-lg">Loading analytics...</span>
+      </motion.div>
+    );
   }
 
   if (error) {
-    return <div className="p-8 text-red-600">Error loading analytics: {error}</div>;
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="p-8 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen flex items-center justify-center"
+      >
+        <div className="bg-red-500/20 border border-red-400/50 backdrop-blur p-6 rounded-xl text-red-200">
+          <p className="font-semibold">Error loading analytics:</p>
+          <p className="text-sm mt-1">{error}</p>
+        </div>
+      </motion.div>
+    );
   }
 
   if (!analytics) {
-    return <div className="p-8 text-center">No analytics data available</div>;
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="p-8 text-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen flex items-center justify-center"
+      >
+        <span className="text-gray-300">No analytics data available</span>
+      </motion.div>
+    );
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Claims Analytics Dashboard</h1>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="p-8 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen"
+    >
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="mb-12"
+      >
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2">
+          Claims Analytics Dashboard
+        </h1>
+        <p className="text-gray-400">Real-time insights into claim patterns and denial trends</p>
+      </motion.div>
 
-      {/* KPI Section */}
-      <div className="mb-8">
-        <KPICards analytics={analytics} />
-      </div>
+      <div className="space-y-8">
+        {/* KPI Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.5 }}
+        >
+          <KPICards analytics={analytics} />
+        </motion.div>
 
-      {/* Top Procedures Section */}
-      <div className="mb-8">
-        <TopProceduresTable procedures={analytics.top_procedures} />
-      </div>
+        {/* Top Procedures Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          <TopProceduresTable procedures={analytics.top_procedures} />
+        </motion.div>
 
-      {/* Claim Amount Analysis */}
-      <div className="mb-8">
-        <ClaimAmountInsights comparison={analytics.claim_amount_comparison} />
-      </div>
+        {/* Claim Amount Analysis */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          <ClaimAmountInsights comparison={analytics.claim_amount_comparison} />
+        </motion.div>
 
-      {/* Payer Performance Section */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h3 className="text-lg font-semibold mb-4 text-gray-800">Denial Rate by Payer</h3>
-        <div className="space-y-3">
-          {analytics.denial_by_payer?.map(payer => (
-            <div key={payer.payer} className="flex items-center justify-between p-3 border rounded">
-              <span className="font-medium">{payer.payer}</span>
-              <div className="flex items-center gap-4">
-                <div className="w-48 bg-gray-200 rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full ${
-                      payer.denial_rate > 0.35 ? 'bg-red-500' :
-                      payer.denial_rate > 0.33 ? 'bg-yellow-500' :
-                      'bg-green-500'
+        {/* Payer Performance Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+          whileHover={{ boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)' }}
+          className="bg-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl p-6 border border-white/20 transition-all duration-300"
+        >
+          <motion.h3
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.45 }}
+            className="text-xl font-bold text-cyan-300 mb-6 flex items-center gap-2"
+          >
+            <TrendingUp className="w-5 h-5" />
+            Denial Rate by Payer
+          </motion.h3>
+          <motion.div
+            className="space-y-3"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              visible: {
+                transition: {
+                  staggerChildren: 0.05,
+                },
+              },
+            }}
+          >
+            {analytics.denial_by_payer?.map((payer, idx) => (
+              <motion.div
+                key={payer.payer}
+                variants={{
+                  hidden: { opacity: 0, x: -20 },
+                  visible: { opacity: 1, x: 0 },
+                }}
+                whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
+                className="flex items-center justify-between p-4 border border-white/10 rounded-lg transition-all"
+              >
+                <span className="font-medium text-gray-200">{payer.payer}</span>
+                <div className="flex items-center gap-4">
+                  <div className="w-48 bg-white/10 rounded-full h-2 overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${payer.denial_rate * 100}%` }}
+                      transition={{ duration: 0.8, delay: idx * 0.05 + 0.5, ease: 'easeOut' }}
+                      className={`h-2 rounded-full ${
+                        payer.denial_rate > 0.35 ? 'bg-gradient-to-r from-red-500 to-red-600' :
+                        payer.denial_rate > 0.33 ? 'bg-gradient-to-r from-amber-500 to-amber-600' :
+                        'bg-gradient-to-r from-emerald-500 to-emerald-600'
+                      }`}
+                    />
+                  </div>
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: idx * 0.05 + 0.3 }}
+                    className={`text-sm font-semibold w-16 text-right ${
+                      payer.denial_rate > 0.35 ? 'text-red-300' :
+                      payer.denial_rate > 0.33 ? 'text-amber-300' :
+                      'text-emerald-300'
                     }`}
-                    style={{ width: `${payer.denial_rate * 100}%` }}
-                  ></div>
+                  >
+                    {payer.denial_rate_percent}
+                  </motion.span>
                 </div>
-                <span className="text-sm font-semibold w-16 text-right">
-                  {payer.denial_rate_percent}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
